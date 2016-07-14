@@ -1,0 +1,2 @@
+# play_with_go
+KindleセールでGo書籍が安かったので試す
