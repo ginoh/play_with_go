@@ -8,34 +8,30 @@ import (
 )
 
 func main() {
-	// m := challenge.NewSimpleManager()
-
-	// resp, err := http.Get("https://registry-1.docker.io/v2/hoge/foo/manifests/latest")
-	// // resp, err := http.Get("https://registry-1.docker.io/v2/")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// if resp.StatusCode != http.StatusUnauthorized {
-	// 	fmt.Println("Not Unauthorized Response")
-	// }
-	// m.AddResponse(resp)
-
-	// ep, err := url.Parse("https://registry-1.docker.io:443/v2/hoge/foo/manifests/latest")
-	// // ep, err := url.Parse("https://registry-1.docker.io:443/v2/")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// ch, err := m.GetChallenges(*ep)
-	// for _, c := range ch {
-	// 	fmt.Printf("%#v", c.Parameters)
-	// }
-
 	director := func(r *http.Request) {
 		r.URL.Scheme = "https"
-		r.URL.Host = "registry-1.docker.io:443"
+		r.URL.Host = "registry-1.docker.io"
 		r.URL.Path = "/v2/hoge/foo/manifests/latest"
+		r.Host = r.URL.Host // Host Header
 	}
-	rp := &httputil.ReverseProxy{Director: director}
+	modifier := func(res *http.Response) error {
+		fmt.Println(res.Request.URL)
+		fmt.Println(res.StatusCode)
+
+		dump, _ := httputil.DumpRequest(res.Request, true)
+		fmt.Printf("%q", dump)
+
+		return nil
+	}
+
+	errorHandler := func(w http.ResponseWriter, r *http.Request, err error) {
+		fmt.Printf("%#v\n", err)
+	}
+	rp := &httputil.ReverseProxy{
+		Director:       director,
+		ModifyResponse: modifier,
+		ErrorHandler:   errorHandler,
+	}
 
 	statusHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
