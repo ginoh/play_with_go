@@ -1,11 +1,13 @@
 ## 開発環境構築
 
-言語環境は golang に限らず [anyenv](https://github.com/anyenv/anyenv) を利用してセットアップする.
-anyenv は goenv, rbenv, pyenv などの **env系のインストールを管理するTool。環境構築を可能なら統一したかったので利用している.
+[anyenv](https://github.com/anyenv/anyenv) を利用してセットアップする.
+[Getting Started](https://github.com/anyenv/anyenv#getting-started)の通りに anyenv をインストール。
 
-[Getting Started](https://github.com/anyenv/anyenv#getting-started)の通りにanyenvをインストールしておく。
+### go 環境構築
 
-
-### goenv のインストール
-
-TBD
+```
+anyenv install goenv
+goenv install -l
+goenv install XXXX (e.g. goenv install 1.12.4)
+goenv rehash
+```
