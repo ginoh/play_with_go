@@ -7,8 +7,10 @@ import (
 )
 
 func main() {
+	// 標準入力から入力を受け付ける scanner を生成
 	scanner := bufio.NewScanner(os.Stdin)
 
+	// 1行ずつ読み取り、EOFで終了
 	for scanner.Scan() {
 		fmt.Println(scanner.Text())
 	}

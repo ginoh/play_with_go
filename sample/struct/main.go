@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Point struct {
 	X, Y int
@@ -8,7 +10,6 @@ type Point struct {
 
 func main() {
 	// 構造体は値型なのでpointerを利用することが多い
-
 	p := &Point{X: 1, Y: 2}
 
 	// 組み込み関数 New
@@ -16,15 +17,13 @@ func main() {
 	p2.X = 1
 	p2.Y = 2
 
-	p.Render()
+	p3 := NewPoint(1, 2)
 
-	ps := make([]Point, 5)
-	for _, p := range ps {
-		fmt.Println(p.X, p.Y)
-	}
+	p.Render()
+	p2.Render()
+	p3.Render()
 }
 
-// メソッド (任意の型に特化した関数)
 func (p *Point) Render() {
 	fmt.Printf("<%d, %d>\n", p.X, p.Y)
 }
