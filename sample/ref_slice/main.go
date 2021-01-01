@@ -1,21 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	a := [3]int{1, 2, 3}
 	pow1(a)
+	// 変化なし
 	fmt.Printf("%v\n", a)
 
-	s := []int{1, 2, 3}
-	pow2(s)
-	fmt.Printf("%v\n", s)
-
-	b := make([]int, 3)
-	b[0] = 5
+	b := []int{1, 2, 3}
+	pow2(b)
+	// 値の書き換え
 	fmt.Printf("%v\n", b)
 
+	c := make([]int, 3)
+	c[0] = 5
+	fmt.Printf("%v\n", c)
+
 }
+
 func pow1(a [3]int) {
 	for i, v := range a {
 		a[i] = v * v

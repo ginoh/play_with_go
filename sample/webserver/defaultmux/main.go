@@ -15,6 +15,8 @@ func main() {
 	}
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/hello", helloHandler)
+
 	log.Println("Startting Server")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// nil 指定で defaultのマルチプレクサを利用
+	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }

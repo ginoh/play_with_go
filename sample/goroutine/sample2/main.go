@@ -25,11 +25,11 @@ func main() {
 	ch2 := make(chan string, 2)
 
 	// 東京天気
-	url1 := "http://weather.livedoor.com/forecast/webservice/json/v1?city=130010"
+	url1 := ""
 	// 名古屋天気
-	url2 := "http://weather.livedoor.com/forecast/webservice/json/v1?city=230010"
+	url2 := ""
 
-	wg := new(sync.WaitGroup)
+	wg := &sync.WaitGroup{}
 
 	wg.Add(2)
 	go getWeb(url1, ch1, wg)

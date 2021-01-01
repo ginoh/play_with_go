@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	arr := [3]int{1, 2, 3}
@@ -13,7 +15,7 @@ func main() {
 	for i, r := range str {
 		fmt.Printf("%v: %v, %s\n", i, r, string(r))
 	}
-	// indexの増分に注意
+	// indexのインクリメントは1ずつではない
 	str2 := "こんにちわ"
 	for i, r := range str2 {
 		fmt.Printf("%v: %v\n", i, r)

@@ -7,12 +7,14 @@ import (
 
 func main() {
 
+	// channel 作成
 	ch := make(chan int, 20)
 
-	// channelはgoroutine間のデータ共有用
-	go receiver("1st", ch)
-	go receiver("2nd", ch)
-	go receiver("3rd", ch)
+	// channel は goroutine 間のデータ共有用
+	// 処理する receiver を 3つ用意
+	go receiver("rv1", ch)
+	go receiver("rv2", ch)
+	go receiver("rv3", ch)
 
 	i := 0
 	for i < 100 {
@@ -21,19 +23,20 @@ func main() {
 	}
 	close(ch)
 
+	// 処理が終わる余裕のために 3sec 待機
 	time.Sleep(3 * time.Second)
 }
 
 func receiver(name string, ch <-chan int) {
 	for {
-		// バッファ空 && closeの場合は ok == false
+		// バッファ空 && close の場合は ok == false
 		i, ok := <-ch
 		if ok == false {
 			break
 		}
 		fmt.Println(name, i)
 	}
-	// // rangeも利用できるが、closeのタイミングがわからない
+	// // rangeも利用できるが、close のタイミングがわからない
 	// for i := range ch {
 	// 	fmt.Println(name, i)
 	// }

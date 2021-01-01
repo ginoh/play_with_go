@@ -1,16 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 
+	// channel 作成
 	ch := make(chan int)
 
-	// channelはgoroutine間のデータ共有用
+	// channel は goroutine 間のデータ共有用
 	go receiver(ch)
 
 	i := 0
-	for i < 10000 {
+	for i < 100 {
 		ch <- i
 		i++
 	}

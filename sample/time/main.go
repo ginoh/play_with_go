@@ -6,5 +6,10 @@ import (
 )
 
 func main() {
-	fmt.Println(time.Now())
+	start := time.Now()
+	time.Sleep(2 * time.Second)
+	end := time.Now()
+
+	// end - start
+	fmt.Printf("%v\n", end.Sub(start))
 }

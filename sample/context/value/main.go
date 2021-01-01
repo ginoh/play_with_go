@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	ctx := context.WithValue(context.Background(), "key", "aaa")
+	ctx := context.WithValue(context.Background(), "key", "Hello")
 
 	result := make(chan string)
 	go SampleFunc(ctx, result)
@@ -19,8 +19,9 @@ func SampleFunc(ctx context.Context, result chan<- string) error {
 	v, ok := ctx.Value("key").(string)
 	if !ok {
 		fmt.Println("type assersion fail")
-		// エラー処理
+
+		// エラー処理などを書く
 	}
-	result <- (v + "bbb")
+	result <- (v + ", World!")
 	return nil
 }
