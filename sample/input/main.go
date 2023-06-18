@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -27,5 +28,27 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		// non-EOF error
 		fmt.Fprintln(os.Stderr, "エラー:", err)
+	}
+
+	fmt.Println("== bufio.NewReader ==")
+
+	// 指定した長さのバイト列ごとに読み出す Reader 構造体を使う方法
+	// 基本的には scanner 使っておくのが良さそう
+
+	reader := bufio.NewReaderSize(os.Stdin, 4096)
+	for {
+		// バッファサイズを超えると isPrefix が true になり、バッファ分だけがまず返却される
+		tmp, isPrefix, err := reader.ReadLine()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			// non-EOF error
+			fmt.Fprintln(os.Stderr, "エラー:", err)
+			break
+		}
+		if !isPrefix {
+			fmt.Println(string(tmp))
+		}
 	}
 }
