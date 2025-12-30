@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,19 +15,21 @@ func main() {
 		log.Fatal(err)
 	}
 	defer f1.Close()
-	f2, err := os.OpenFile("nagoyo.json", os.O_RDWR|os.O_CREATE, 0666)
+	f2, err := os.OpenFile("nagoya.json", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f2.Close()
 
-	ch1 := make(chan string, 2)
-	ch2 := make(chan string, 2)
+	// 1回送信の用途なので close は使わない
+	ch1 := make(chan string, 1)
+	ch2 := make(chan string, 1)
 
+	// 実行前に有効なURLへ差し替える（JSONが返る想定）
 	// 東京天気
-	url1 := ""
+	url1 := "https://example.com/tokyo.json"
 	// 名古屋天気
-	url2 := ""
+	url2 := "https://example.com/nagoya.json"
 
 	wg := &sync.WaitGroup{}
 
@@ -37,26 +39,28 @@ func main() {
 	wg.Wait()
 
 	fmt.Println("all goroutine Done")
-	f1.WriteString(<-ch1)
-	f2.WriteString(<-ch2)
+	if _, err := f1.WriteString(<-ch1); err != nil {
+		log.Fatal(err)
+	}
+	if _, err := f2.WriteString(<-ch2); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getWeb(url string, ch chan string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
-		ch <- "http Get error"
-		close(ch)
+		ch <- fmt.Sprintf("http Get error: %v", err)
 		return
 	}
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		ch <- "Read error"
-		close(ch)
+		ch <- fmt.Sprintf("Read error: %v", err)
 		return
 	}
 	ch <- string(body)
-	wg.Done()
 }
