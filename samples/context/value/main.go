@@ -5,23 +5,36 @@ import (
 	"fmt"
 )
 
-func main() {
-	ctx := context.WithValue(context.Background(), "key", "Hello")
+type ctxKey string
 
-	result := make(chan string)
+const messageKey ctxKey = "message"
+
+type Result struct {
+	Value string
+	Err   error
+}
+
+func main() {
+	ctx := context.WithValue(context.Background(), messageKey, "Hello")
+
+	// 結果とエラーを1本のチャネルで受け取る方式
+	result := make(chan Result, 1)
 	go SampleFunc(ctx, result)
 
-	fmt.Printf("returned value: %s\n", <-result)
+	r := <-result
+	if r.Err != nil {
+		fmt.Println("error:", r.Err)
+		return
+	}
+	fmt.Printf("returned value: %s\n", r.Value)
 
 }
 
-func SampleFunc(ctx context.Context, result chan<- string) error {
-	v, ok := ctx.Value("key").(string)
+func SampleFunc(ctx context.Context, result chan<- Result) {
+	v, ok := ctx.Value(messageKey).(string)
 	if !ok {
-		fmt.Println("type assersion fail")
-
-		// エラー処理などを書く
+		result <- Result{Err: fmt.Errorf("type assertion fail")}
+		return
 	}
-	result <- (v + ", World!")
-	return nil
+	result <- Result{Value: v + ", World!"}
 }

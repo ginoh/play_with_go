@@ -14,12 +14,21 @@ func main() {
 
 	// WaitGroup を利用して goroutine の完了を待つようにしたい
 	wg := &sync.WaitGroup{}
+	// task の戻り値を受け取るチャンネルを準備
+	errCh := make(chan error, 1)
 
 	fmt.Println("== start ==")
 
 	wg.Add(1)
-	go task(ctx, wg)
+	// エラーを受け取れるようにする
+	go func() {
+		errCh <- task(ctx, wg)
+	}()
 	wg.Wait()
+
+	if err := <-errCh; err != nil {
+		fmt.Println("task error:", err)
+	}
 
 	fmt.Println("== finish ==")
 }
@@ -27,15 +36,15 @@ func main() {
 func task(ctx context.Context, wg *sync.WaitGroup) error {
 	defer wg.Done()
 	n := 5
-	//  想定ではループ数は 3回で終了する
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+	// タイムアウトにより最後まで回り切らないことを確認する
 	for i := 0; i < n; i++ {
 		select {
-		case <-time.After(2 * time.Second):
-			fmt.Printf("Done task (%v)!\n", i)
-		case <-time.After(3 * time.Second):
+		case <-ticker.C:
 			fmt.Printf("Done task (%v)!\n", i)
 		case <-ctx.Done():
-			fmt.Printf("cannel the context (%v).\n", i)
+			fmt.Printf("cancel the context (%v).\n", i)
 			return ctx.Err()
 		}
 	}
