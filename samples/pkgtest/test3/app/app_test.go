@@ -11,8 +11,12 @@ func TestAppEcho(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	app := mock_app.NewMockApplicaion(ctrl)
+	app := mock_app.NewMockApplication(ctrl)
 	app.EXPECT().Name().Return("MockApp")
 
 	// mock を利用したテストを書く
+	if got := app.Name(); got != "MockApp" {
+		t.Fatalf("Name() = %s, want %s", got, "MockApp")
+	}
 }
+t

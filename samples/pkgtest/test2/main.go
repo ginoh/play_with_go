@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	// module 内の別パッケージを呼び出す例
 	str := app.AppEcho()
 	fmt.Println(str)
 }

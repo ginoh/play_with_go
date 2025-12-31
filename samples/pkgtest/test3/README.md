@@ -9,6 +9,7 @@
 ### モックの作成
 
 app.goのテストをモックを作成・利用してテストする
+mock_app.go は生成済みなので、そのまま go test できる
 
 ### mockgenパッケージのインストール
 参考：https://github.com/golang/mock
@@ -63,11 +64,16 @@ func TestXXXX(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	app := mock_app.NewMockApplicaion(ctrl)
+	app := mock_app.NewMockApplication(ctrl)
 	app.EXPECT().Name().Return("MockApp")
     ・
     ・
     ・
     // このMockを注入する形などで利用する
 }
+```
+
+### 実行
+```
+go test ./...
 ```

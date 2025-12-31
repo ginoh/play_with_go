@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"./hoge"
+	"pkgtest1/hoge"
 )
 
 func main() {
