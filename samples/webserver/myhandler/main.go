@@ -2,21 +2,28 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 )
 
-type MyHandler struct{}
+type MyHandler struct {
+	Message string
+}
 
 // ServeHTTPを実装しているものが Handler
 func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
+	fmt.Fprintf(w, "%s", h.Message)
 }
 
 func main() {
-	handler := MyHandler{}
+	handler := MyHandler{
+		Message: "Hello World!",
+	}
+	addr := "localhost:8080"
+	log.Println("Starting server on http://" + addr)
 	server := http.Server{
-		Addr:    "localhost:8080",
+		Addr:    addr,
 		Handler: &handler,
 	}
-	server.ListenAndServe()
+	log.Fatal(server.ListenAndServe())
 }
